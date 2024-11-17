@@ -5,7 +5,10 @@ import os
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///faculty.db'
+
+# Set up the database URI. For local development, it's SQLite, but for production (Render), you can use PostgreSQL.
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///faculty.db')  # Use PostgreSQL URL in production
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # To avoid warnings from SQLAlchemy
 db = SQLAlchemy(app)
 
 # Database Models
@@ -124,6 +127,7 @@ def logout():
     return redirect(url_for('home'))
 
 if __name__ == '__main__':
+    # For local development, SQLite will be used. In production, PostgreSQL will be used.
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
