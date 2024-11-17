@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash, check_password_hash
+# from werkzeug.security import generate_password_hash, check_password_hash
 import os
 
 app = Flask(__name__)
@@ -33,11 +33,12 @@ def home():
 @app.route('/login', methods=['POST'])
 def login():
     username = request.form['username']
-    password = request.form['password']
+     = request.form['']
     
     user = User.query.filter_by(username=username).first()
     
-    if user and check_password_hash(user.password, password):
+    # if user and check__hash(user.password, password):
+    if user and (user.password == password):
         session['user_id'] = user.id
         session['role'] = user.role
         
@@ -91,7 +92,8 @@ def create_user():
         return redirect(url_for('home'))
     
     username = request.form['username']
-    password = generate_password_hash(request.form['password'])
+    # password = generate_password_hash(request.form['password'])
+    password = (request.form['password'])
     role = request.form['role']
     
     user = User(username=username, password=password, role=role)
